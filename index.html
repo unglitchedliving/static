@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ultra-Lightweight Page</title>
+    <!-- 1. Auto-styling via classless CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <!-- 2. The lightweight interactivity engines -->
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js" integrity="sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="container" x-data="{ open: false }">
+	
+    <nav>
+        <ul><li><strong>My Minimal App</strong></li></ul>
+        <ul><li><button @click="open = true">Open Quick Modal</button></li></ul>
+    </nav>
+
+    <main>
+        <h1>Dynamic Dashboard</h1>
+        <!-- HTMX: Hits server endpoint on click and replaces this exact section with raw HTML -->
+        <div id="data-box">
+            <button hx-get="title.html" hx-target="#data-box">Load Live Stats</button>
+        </div>
+    </main>
+
+    <!-- Alpine.js: Toggles this overlay locally without a single line of external JavaScript -->
+    <dialog :open="open">
+        <article>
+            <h3>Modal Header</h3>
+            <p>This modal is controlled locally using Alpine.js attributes!</p>
+            <button @click="open = false" class="secondary">Close</button>
+        </article>
+    </dialog>
+
+</body>
+</html>
