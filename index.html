@@ -1,37 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Ultra-Lightweight Page</title>
-    <!-- 1. Auto-styling via classless CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <!-- 2. The lightweight interactivity engines -->
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js" integrity="sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My GitHub Pages Video Gallery</title>
+  <style>
+    /* Clean, modern, GitHub-inspired typography and colors */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background-color: #f6f8fa;
+      color: #24292e;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 32px;
+      border-bottom: 1px solid #e1e4e8;
+      padding-bottom: 16px;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+
+    header p {
+      color: #586069;
+      margin: 0;
+    }
+
+    /* Beautiful, responsive CSS grid layout */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    /* Video card styling */
+    .video-card {
+      background: #ffffff;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(27,31,35,0.04);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(27,31,35,0.08);
+    }
+
+    /* Perfect 16:9 aspect ratio container for responsive YouTube embeds */
+    .video-player-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #000;
+      margin-bottom: 16px;
+    }
+
+    .video-player-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .playlist-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6a737d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .video-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 12px 0;
+      color: #0366d6;
+    }
+
+    /* Tags container and individual pills */
+    .tags-container {
+      margin-top: auto; /* Pushes tags to the bottom if titles have varying lengths */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      background-color: #f1f8ff;
+      color: #0366d6;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 3px;
+      text-decoration: none;
+    }
+
+    .tag:hover {
+      background-color: #dbedff;
+    }
+  </style>
 </head>
-<body class="container" x-data="{ open: false }">
-	
-    <nav>
-        <ul><li><strong>My Minimal App</strong></li></ul>
-        <ul><li><button @click="open = true">Open Quick Modal</button></li></ul>
-    </nav>
+<body>
 
-    <main>
-        <h1>Dynamic Dashboard</h1>
-        <!-- HTMX: Hits server endpoint on click and replaces this exact section with raw HTML -->
-        <div id="data-box">
-            <button hx-get="title.html" hx-target="#data-box">Load Live Stats</button>
+  <div class="container">
+    <header>
+      <h1>Video Playlist Showcase</h1>
+      <p>A beautifully curated, JSON-driven video showcase gallery.</p>
+    </header>
+
+    <!-- Target element for JavaScript injection -->
+    <div id="video-grid" class="video-grid"></div>
+  </div>
+
+  <script>
+    // Lightweight JSON Data structure with real, open-source sample YouTube video IDs
+    const videoData = [
+      {
+        "id": "-Nbm1vFsr7Q", 
+        "playlist": "Classic Hits",
+        "title": "Rick Astley - Never Gonna Give You Up",
+        "tags": ["music", "pop", "80s", "classic"]
+      },
+      {
+        "id": "-Nbm1vFsr7Q",
+        "playlist": "Nature & Relaxation",
+        "title": "Me at the zoo - The First YouTube Video",
+        "tags": ["history", "zoo", "classic", "vlog"]
+      },
+      {
+        "id": "-Nbm1vFsr7Q",
+        "playlist": "Web Development Basics",
+        "title": "HTML & CSS Crash Course for Beginners",
+        "tags": ["html", "css", "webdev", "tutorial"]
+      }
+    ];
+
+    const gridContainer = document.getElementById('video-grid');
+
+    // Dynamically generate and render the player layout
+    videoData.forEach(video => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+
+      // Map over tags array to produce tag elements
+      const tagsHTML = video.tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
+
+      card.innerHTML = `
+        <div class="video-player-container">
+          <iframe 
+            src="https://youtube.com{video.id}" 
+            title="${video.title}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+          </iframe>
         </div>
-    </main>
+        <div class="playlist-title">${video.playlist}</div>
+        <h2 class="video-title">${video.title}</h2>
+        <div class="tags-container">
+          ${tagsHTML}
+        </div>
+      `;
 
-    <!-- Alpine.js: Toggles this overlay locally without a single line of external JavaScript -->
-    <dialog :open="open">
-        <article>
-            <h3>Modal Header</h3>
-            <p>This modal is controlled locally using Alpine.js attributes!</p>
-            <button @click="open = false" class="secondary">Close</button>
-        </article>
-    </dialog>
+      gridContainer.appendChild(card);
+    });
+  </script>
 
 </body>
 </html>
