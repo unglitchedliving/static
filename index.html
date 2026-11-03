@@ -18,19 +18,18 @@
     .active-info p{font-size:12px;color:var(--text-muted);}
     .empty-state{padding:20px;text-align:center;color:#fff;background:#1f2328;font-size:14px;}
     .sidebar{display:flex;flex-direction:column;flex-grow:1;overflow:hidden;background-color:var(--panel-bg);}
-    .search-box{padding:12px 16px;border-bottom:1px solid var(--border-color);background-color:var(--panel-bg);}
-    .search-box input{width:100%;padding:10px 14px;font-size:14px;border:1px solid var(--border-color);border-radius:6px;outline:none;background-color:var(--bg-color);}
-    .search-box input:focus{border-color:var(--primary-color);background-color:#fff;box-shadow:0 0 0 3px rgba(3,102,214,0.2);}
-    .playlist-tree{flex:1;overflow-y:auto;padding:8px 16px;}
-    .playlist-group{border-bottom:1px solid var(--bg-color);}
-    .playlist-header{display:flex;align-items:center;justify-content:between;padding:12px 4px;font-weight:600;font-size:14px;cursor:pointer;color:var(--text-color);}
-    .collapse-icon{transition:transform 0.2s;font-size:10px;color:var(--text-muted);}
-    .playlist-group.collapsed .collapse-icon{transform:rotate(-90deg);}
-    .song-list{list-style:none;padding-left:8px;margin-bottom:8px;}
-    .playlist-group.collapsed .song-list{display:none;}
-    .song-item{padding:10px 12px;font-size:13px;cursor:pointer;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--text-color);background-color:var(--bg-color);}
+    .controls-wrapper{padding:12px 16px;border-bottom:1px solid var(--border-color);background-color:var(--panel-bg);display:flex;flex-direction:column;gap:8px;}
+    .controls-wrapper select, .controls-wrapper input{width:100%;padding:10px 14px;font-size:14px;border:1px solid var(--border-color);border-radius:6px;outline:none;background-color:var(--bg-color);color:var(--text-color);}
+    .controls-wrapper select:focus, .controls-wrapper input:focus{border-color:var(--primary-color);background-color:#fff;box-shadow:0 0 0 3px rgba(3,102,214,0.2);}
+    .song-list-container{flex:1;overflow-y:auto;padding:8px 16px;}
+    .song-list{list-style:none;}
+    .song-item{padding:10px 12px;font-size:13px;cursor:pointer;border-radius:6px;margin-bottom:6px;color:var(--text-color);background-color:var(--bg-color);display:flex;flex-direction:column;gap:2px;}
+    .song-item-title{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .song-item-meta{font-size:11px;color:var(--text-muted);}
     .song-item:hover{background-color:var(--primary-hover);color:var(--primary-color);}
-    .song-item.active{background-color:var(--primary-color);color:#fff;font-weight:500;}
+    .song-item:hover .song-item-meta{color:var(--primary-color);}
+    .song-item.active{background-color:var(--primary-color);color:#fff;}
+    .song-item.active .song-item-meta{color:rgba(255,255,255,0.8);}
     @media(min-width:768px){
       body{flex-direction:row;}
       .sidebar{width:320px;flex-grow:0;border-right:1px solid var(--border-color);}
@@ -48,8 +47,15 @@
     <div class="empty-state"><h2>Select a video below to start watching</h2></div>
   </main>
   <aside class="sidebar">
-    <div class="search-box"><input type="text" id="searchInput" placeholder="Search title or playlist..."></div>
-    <div id="playlistTree" class="playlist-tree"></div>
+    <div class="controls-wrapper">
+      <select id="playlistFilter">
+        <option value="">All Playlists</option>
+      </select>
+      <input type="text" id="searchInput" placeholder="Search by video title...">
+    </div>
+    <div class="song-list-container">
+      <ul id="songList" class="song-list"></ul>
+    </div>
   </aside>
   <script>
     const videoData=[
@@ -58,43 +64,45 @@
       {"Id":"003","Playlist":"Web Development Basics","Title":"HTML & CSS Crash Course for Beginners","Video_id":"2g811Eo7K8U"}
     ];
     let currentActiveId=null;
-    function renderTree(filterText=''){
-      const treeContainer=document.getElementById('playlistTree');
-      treeContainer.innerHTML='';
-      const query=filterText.toLowerCase().trim();
-      const groups={};
-      videoData.forEach(item=>{
-        if(!query||item.Title.toLowerCase().includes(query)||item.Playlist.toLowerCase().includes(query)){
-          if(!groups[item.Playlist])groups[item.Playlist]=[];
-          groups[item.Playlist].push(item);
-        }
-      });
-      Object.keys(groups).forEach(name=>{
-        const groupEl=document.createElement('div');
-        groupEl.className='playlist-group';
-        const headerEl=document.createElement('div');
-        headerEl.className='playlist-header';
-        headerEl.innerHTML=`<span>${name}</span><span class="collapse-icon">▼</span>`;
-        const listEl=document.createElement('ul');
-        listEl.className='song-list';
-        groups[name].forEach(video=>{
-          const itemEl=document.createElement('li');
-          itemEl.className=`song-item ${currentActiveId===video.Id?'active':''}`;
-          itemEl.textContent=video.Title;
-          itemEl.title=video.Title;
-          itemEl.addEventListener('click',e=>{e.stopPropagation();loadVideo(video);});
-          listEl.appendChild(itemEl);
-        });
-        headerEl.addEventListener('click',()=>groupEl.classList.toggle('collapsed'));
-        groupEl.appendChild(headerEl);groupEl.appendChild(listEl);
-        treeContainer.appendChild(groupEl);
+
+    function initFilters(){
+      const select=document.getElementById('playlistFilter');
+      const playlists=[...new Set(videoData.map(item=>item.Playlist))];
+      playlists.forEach(pl=>{
+        const opt=document.createElement('option');
+        opt.value=pl;
+        opt.textContent=pl;
+        select.appendChild(opt);
       });
     }
+
+    function renderList(){
+      const listContainer=document.getElementById('songList');
+      listContainer.innerHTML='';
+      const selectedPlaylist=document.getElementById('playlistFilter').value;
+      const query=document.getElementById('searchInput').value.toLowerCase().trim();
+
+      videoData.forEach(video=>{
+        const matchesPlaylist=!selectedPlaylist||video.Playlist===selectedPlaylist;
+        const matchesSearch=!query||video.Title.toLowerCase().includes(query);
+
+        if(matchesPlaylist&&matchesSearch){
+          const itemEl=document.createElement('li');
+          itemEl.className=`song-item ${currentActiveId===video.Id?'active':''}`;
+          itemEl.innerHTML=`
+            <span class="song-item-title" title="${video.Title}">${video.Title}</span>
+            <span class="song-item-meta">${video.Playlist}</span>
+          `;
+          itemEl.addEventListener('click',()=>{loadVideo(video);});
+          listContainer.appendChild(itemEl);
+        }
+      });
+    }
+
     function loadVideo(video){
       currentActiveId=video.Id;
       document.querySelectorAll('.song-item').forEach(el=>el.classList.remove('active'));
-      const target=Array.from(document.querySelectorAll('.song-item')).find(el=>el.textContent===video.Title);
-      if(target)target.classList.add('active');
+      renderList();
       document.getElementById('mainStage').innerHTML=`
         <div class="video-window">
           <div class="video-container">
@@ -103,14 +111,19 @@
           <div class="active-info"><h1>${video.Title}</h1><p>Playlist: <strong>${video.Playlist}</strong></p></div>
         </div>`;
     }
-    document.getElementById('searchInput').addEventListener('input',e=>renderTree(e.target.value));
+
+    document.getElementById('playlistFilter').addEventListener('change',renderList);
+    document.getElementById('searchInput').addEventListener('input',renderList);
+
     if('serviceWorker' in navigator){
       window.addEventListener('load',()=>{
         const swBlob=new Blob([`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('fetch',e=>e.respondWith(fetch(e.request)));`],{type:'text/javascript'});
         navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
       });
     }
-    renderTree();
+
+    initFilters();
+    renderList();
   </script>
 </body>
 </html>
