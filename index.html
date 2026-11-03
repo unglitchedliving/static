@@ -36,6 +36,7 @@
     .song-item.active{background:var(--card-active);border-color:var(--primary-color);animation:glow 2s infinite;}
     @keyframes fIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
     .a-fade{animation:fIn 0.3s ease forwards;}
+    .ad-zone{width:100%;height:60px;background:#161b22;border-top:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;padding:4px;flex-shrink:0;color:var(--text-muted);font-size:11px;}
     @media(min-width:768px),(orientation:landscape) and (max-height:500px){
       body{flex-direction:row;}
       .sidebar{width:280px;flex-grow:0;border-right:1px solid var(--border-color);}
@@ -59,6 +60,8 @@
       </div>
     </div>
     <div class="song-list-container"><ul id="sList" class="song-list"></ul></div>
+    <!-- Clean, non-blocking sticky container at the very bottom of the sidebar controls panel layout -->
+    <div class="ad-zone" id="adStage">ADVERTISEMENT PLACEHOLDER CONTAINER</div>
   </aside>
   <script>
     const data=[
@@ -89,9 +92,10 @@
     function load(v,click){
       activeId=v.Id;localStorage.setItem('pwa_vid',v.Id);render();
       const loop=document.getElementById('lToggle').checked, ap=click?"&autoplay=1":"", lp=loop?`&loop=1&playlist=${v.Video_id}`:"";
+      // Added picture-in-picture permissions explicitly inside allow properties
       document.getElementById('mainStage').innerHTML=`
         <div class="video-window a-fade">
-          <div class="video-container"><iframe src="https://youtube.com/embed/${v.Video_id}??rel=0${ap}${lp}" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe></div>
+          <div class="video-container"><iframe src="https://youtube.com/embed/${v.Video_id}?rel=0${ap}${lp}" allow="autoplay;encrypted-media;gyroscope;picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
           <div class="active-info"><h1>${v.Title}</h1><p>Playlist: <strong>${v.Playlist}</strong></p></div>
         </div>`;
     }
