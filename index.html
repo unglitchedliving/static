@@ -6,125 +6,113 @@
   <title>Video Stream PWA</title>
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Video%20Stream%20PWA%22%2C%22short_name%22%3A%22VideoStream%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230d1117%22%2C%22theme_color%22%3A%22%2358a6ff%22%7D">
   <style>
-    :root{--bg-color:#0d1117;--panel-bg:#161b22;--border-color:#30363d;--text-color:#c9d1d9;--text-muted:#8b949e;--primary-color:#58a6ff;--primary-hover:#1f2937;--card-active:#1f6feb;}
+    :root{--bg-color:#0d1117;--panel-bg:#161b22;--border-color:#30363d;--text-color:#c9d1d9;--text-muted:#8b949e;--primary-color:#58a6ff;--primary-hover:#1f2937;--card-active:#1f6feb;--danger-color:#f85149;}
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background-color:var(--bg-color);color:var(--text-color);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;background:var(--bg-color);color:var(--text-color);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
     .main-content{width:100%;background:#000;flex-shrink:0;}
     .video-window{width:100%;}
-    .video-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:#000;}
-    .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
-    .active-info{background:var(--panel-bg);padding:14px 16px;border-bottom:1px solid var(--border-color);}
-    .active-info h1{font-size:16px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f0f6fc;}
+    .video-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;}
+    .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+    .active-info{background:var(--panel-bg);padding:12px 16px;border-bottom:1px solid var(--border-color);}
+    .active-info h1{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f0f6fc;}
     .active-info p{font-size:12px;color:var(--text-muted);}
     .active-info strong{color:var(--primary-color);}
-    .empty-state{padding:24px;text-align:center;color:var(--text-muted);background:#0d1117;font-size:14px;}
-    .sidebar{display:flex;flex-direction:column;flex-grow:1;overflow:hidden;background-color:var(--panel-bg);}
-    .controls-wrapper{padding:16px;border-bottom:1px solid var(--border-color);background-color:var(--panel-bg);display:flex;flex-direction:column;gap:10px;}
-    .controls-wrapper select, .controls-wrapper input{width:100%;padding:10px 14px;font-size:14px;border:1px solid var(--border-color);border-radius:6px;outline:none;background-color:var(--bg-color);color:#f0f6fc;}
-    .controls-wrapper select:focus, .controls-wrapper input:focus{border-color:var(--primary-color);background-color:#161b22;box-shadow:0 0 0 3px rgba(88,166,255,0.15);}
-    .song-list-container{flex:1;overflow-y:auto;padding:8px 16px;}
+    .empty-state{padding:24px;text-align:center;color:var(--text-muted);font-size:14px;}
+    .sidebar{display:flex;flex-direction:column;flex-grow:1;overflow:hidden;background:var(--panel-bg);}
+    .controls-wrapper{padding:14px;border-bottom:1px solid var(--border-color);display:flex;flex-direction:column;gap:8px;}
+    .controls-wrapper select,.controls-wrapper input{width:100%;padding:8px 12px;font-size:14px;border:1px solid var(--border-color);border-radius:6px;outline:none;background:var(--bg-color);color:#f0f6fc;}
+    .controls-wrapper select:focus,.controls-wrapper input:focus{border-color:var(--primary-color);box-shadow:0 0 0 3px rgba(88,166,255,0.15);}
+    .options-row{display:flex;justify-content:space-between;align-items:center;padding-top:4px;}
+    .loop-label{font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer;user-select:none;}
+    .btn-clear{background:transparent;border:1px solid var(--border-color);color:var(--danger-color);padding:4px 8px;font-size:11px;font-weight:500;border-radius:6px;cursor:pointer;}
+    .btn-clear:hover{background:var(--danger-color);color:#fff;}
+    .song-list-container{flex:1;overflow-y:auto;padding:4px 14px;}
     .song-list{list-style:none;}
-    .song-item{padding:12px;font-size:13px;cursor:pointer;border-radius:6px;margin-bottom:8px;color:var(--text-color);background-color:var(--bg-color);border:1px solid transparent;display:flex;flex-direction:column;gap:4px;transition:all 0.2s ease;}
+    .song-item{padding:10px;font-size:13px;cursor:pointer;border-radius:6px;margin-bottom:6px;background:var(--bg-color);border:1px solid transparent;display:flex;flex-direction:column;transition:all 0.2s;}
     .song-item-title{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f0f6fc;}
     .song-item-meta{font-size:11px;color:var(--text-muted);}
-    .song-item:hover{background-color:var(--primary-hover);border-color:var(--border-color);}
-    .song-item:hover .song-item-title{color:var(--primary-color);}
-    .song-item.active{background-color:var(--card-active);border-color:var(--primary-color);}
-    .song-item.active .song-item-title{color:#ffffff;}
-    .song-item.active .song-item-meta{color:rgba(255,255,255,0.7);}
-    @media(min-width:768px){
+    .song-item:hover{background:var(--primary-hover);border-color:var(--border-color);}
+    @keyframes glow{0%,100%{box-shadow:0 0 4px rgba(88,166,255,0.4);}50%{box-shadow:0 0 10px rgba(88,166,255,0.8);}}
+    .song-item.active{background:var(--card-active);border-color:var(--primary-color);animation:glow 2s infinite;}
+    @keyframes fIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+    .a-fade{animation:fIn 0.3s ease forwards;}
+    @media(min-width:768px),(orientation:landscape) and (max-height:500px){
       body{flex-direction:row;}
-      .sidebar{width:320px;flex-grow:0;border-right:1px solid var(--border-color);}
-      .main-content{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;background-color:var(--bg-color);overflow-y:auto;}
-      .video-window{max-width:900px;background:var(--panel-bg);border:1px solid var(--border-color);border-radius:8px;padding:24px;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-      .video-container{border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.5);}
-      .active-info{padding:16px 0 0 0;border-bottom:none;background:transparent;}
-      .active-info h1{font-size:20px;}
+      .sidebar{width:280px;flex-grow:0;border-right:1px solid var(--border-color);}
+      .main-content{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg-color);overflow-y:auto;}
+      .video-window{max-width:850px;background:var(--panel-bg);border:1px solid var(--border-color);border-radius:8px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+      .video-container{border-radius:6px;}
+      .active-info{padding:12px 0 0 0;border-bottom:none;background:transparent;}
       .empty-state{background:transparent;}
     }
   </style>
 </head>
 <body>
-  <main class="main-content" id="mainStage">
-    <div class="empty-state"><h2>Select a video below to start watching</h2></div>
-  </main>
+  <main class="main-content" id="mainStage"><div class="empty-state"><h2>Select a video below to start watching</h2></div></main>
   <aside class="sidebar">
     <div class="controls-wrapper">
-      <select id="playlistFilter">
-        <option value="">All Playlists</option>
-      </select>
-      <input type="text" id="searchInput" placeholder="Search by video title...">
+      <select id="plFilter"><option value="">All Playlists</option></select>
+      <input type="text" id="sInput" placeholder="Search title...">
+      <div class="options-row">
+        <label class="loop-label"><input type="checkbox" id="lToggle"> Loop Video</label>
+        <button class="btn-clear" id="cHistory">Clear History</button>
+      </div>
     </div>
-    <div class="song-list-container">
-      <ul id="songList" class="song-list"></ul>
-    </div>
+    <div class="song-list-container"><ul id="sList" class="song-list"></ul></div>
   </aside>
   <script>
-    const videoData=[
+    const data=[
       {"Id":"001","Playlist":"Featured Tutorials","Title":"Getting Started with YouTube Embeds","Video_id":"-Nbm1vFsr7Q"},
       {"Id":"002","Playlist":"Classic Hits","Title":"Rick Astley - Never Gonna Give You Up","Video_id":"dQw4w9WgXcQ"},
       {"Id":"003","Playlist":"Web Development Basics","Title":"HTML & CSS Crash Course for Beginners","Video_id":"2g811Eo7K8U"}
     ];
-    let currentActiveId=null;
-
-    function initFilters(){
-      const select=document.getElementById('playlistFilter');
-      const playlists=[...new Set(videoData.map(item=>item.Playlist))];
-      playlists.forEach(pl=>{
-        const opt=document.createElement('option');
-        opt.value=pl;
-        opt.textContent=pl;
-        select.appendChild(opt);
+    let activeId=null;
+    function init(){
+      const sel=document.getElementById('plFilter');
+      [...new Set(data.map(i=>i.Playlist))].forEach(p=>{
+        const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);
       });
     }
-
-    function renderList(){
-      const listContainer=document.getElementById('songList');
-      listContainer.innerHTML='';
-      const selectedPlaylist=document.getElementById('playlistFilter').value;
-      const query=document.getElementById('searchInput').value.toLowerCase().trim();
-
-      videoData.forEach(video=>{
-        const matchesPlaylist=!selectedPlaylist||video.Playlist===selectedPlaylist;
-        const matchesSearch=!query||video.Title.toLowerCase().includes(query);
-
-        if(matchesPlaylist&&matchesSearch){
-          const itemEl=document.createElement('li');
-          itemEl.className=`song-item ${currentActiveId===video.Id?'active':''}`;
-          itemEl.innerHTML=`
-            <span class="song-item-title" title="${video.Title}">${video.Title}</span>
-            <span class="song-item-meta">${video.Playlist}</span>
-          `;
-          itemEl.addEventListener('click',()=>{loadVideo(video);});
-          listContainer.appendChild(itemEl);
+    function render(){
+      const container=document.getElementById('sList'), pl=document.getElementById('plFilter').value, q=document.getElementById('sInput').value.toLowerCase().trim();
+      container.innerHTML='';
+      data.forEach(v=>{
+        if((!pl||v.Playlist===pl)&&(!q||v.Title.toLowerCase().includes(q))){
+          const li=document.createElement('li');
+          li.className=`song-item ${activeId===v.Id?'active':''}`;
+          li.innerHTML=`<span class="song-item-title">${v.Title}</span><span class="song-item-meta">${v.Playlist}</span>`;
+          li.addEventListener('click',()=>load(v,true));
+          container.appendChild(li);
         }
       });
     }
-
-    function loadVideo(video){
-      currentActiveId=video.Id;
-      renderList();
+    function load(v,click){
+      activeId=v.Id;localStorage.setItem('pwa_vid',v.Id);render();
+      const loop=document.getElementById('lToggle').checked, ap=click?"&autoplay=1":"", lp=loop?`&loop=1&playlist=${v.Video_id}`:"";
       document.getElementById('mainStage').innerHTML=`
-        <div class="video-window">
-          <div class="video-container">
-            <iframe src="https://youtube.com/embed/${video.Video_id}?autoplay=1" title="${video.Title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-          </div>
-          <div class="active-info"><h1>${video.Title}</h1><p>Playlist: <strong>${video.Playlist}</strong></p></div>
+        <div class="video-window a-fade">
+          <div class="video-container"><iframe src="https://youtube.com/embed/${v.Video_id}??rel=0${ap}${lp}" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe></div>
+          <div class="active-info"><h1>${v.Title}</h1><p>Playlist: <strong>${v.Playlist}</strong></p></div>
         </div>`;
     }
-
-    document.getElementById('playlistFilter').addEventListener('change',renderList);
-    document.getElementById('searchInput').addEventListener('input',renderList);
-
-    if('serviceWorker' in navigator){
-      window.addEventListener('load',()=>{
-        const swBlob=new Blob([`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('fetch',e=>e.respondWith(fetch(e.request)));`],{type:'text/javascript'});
-        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
-      });
-    }
-
-    initFilters();
-    renderList();
+    document.getElementById('plFilter').addEventListener('change',render);
+    document.getElementById('sInput').addEventListener('input',render);
+    document.getElementById('lToggle').addEventListener('change',()=>{
+      localStorage.setItem('pwa_loop',document.getElementById('lToggle').checked);
+      const cur=data.find(v=>v.Id===activeId);if(cur)load(cur,false);
+    });
+    document.getElementById('cHistory').addEventListener('click',()=>{
+      localStorage.clear();document.getElementById('lToggle').checked=false;activeId=null;render();
+      document.getElementById('mainStage').innerHTML='<div class="empty-state"><h2>Select a video below to start watching</h2></div>';
+    });
+    window.addEventListener('load',()=>{
+      init();if(localStorage.getItem('pwa_loop')==='true')document.getElementById('lToggle').checked=true;
+      const id=localStorage.getItem('pwa_vid'),v=data.find(i=>i.Id===id);if(v){load(v,false)}else{render();}
+      if('serviceWorker' in navigator){
+        const blob=new Blob([`self.addEventListener('fetch',e=>e.respondWith(fetch(e.request)));`],{type:'text/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+      }
+    });
   </script>
 </body>
 </html>
