@@ -4,41 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Stream PWA</title>
-  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Video%20Stream%20PWA%22%2C%22short_name%22%3A%22VideoStream%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f6f8fa%22%2C%22theme_color%22%3A%22%230366d6%22%7D">
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Video%20Stream%20PWA%22%2C%22short_name%22%3A%22VideoStream%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230d1117%22%2C%22theme_color%22%3A%22%2358a6ff%22%7D">
   <style>
-    :root{--bg-color:#f6f8fa;--panel-bg:#ffffff;--border-color:#e1e4e8;--text-color:#24292e;--text-muted:#6a737d;--primary-color:#0366d6;--primary-hover:#f1f8ff;}
+    :root{--bg-color:#0d1117;--panel-bg:#161b22;--border-color:#30363d;--text-color:#c9d1d9;--text-muted:#8b949e;--primary-color:#58a6ff;--primary-hover:#1f2937;--card-active:#1f6feb;}
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background-color:var(--bg-color);color:var(--text-color);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
     .main-content{width:100%;background:#000;flex-shrink:0;}
     .video-window{width:100%;}
     .video-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:#000;}
     .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
-    .active-info{background:var(--panel-bg);padding:12px 16px;border-bottom:1px solid var(--border-color);}
-    .active-info h1{font-size:16px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .active-info{background:var(--panel-bg);padding:14px 16px;border-bottom:1px solid var(--border-color);}
+    .active-info h1{font-size:16px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f0f6fc;}
     .active-info p{font-size:12px;color:var(--text-muted);}
-    .empty-state{padding:20px;text-align:center;color:#fff;background:#1f2328;font-size:14px;}
+    .active-info strong{color:var(--primary-color);}
+    .empty-state{padding:24px;text-align:center;color:var(--text-muted);background:#0d1117;font-size:14px;}
     .sidebar{display:flex;flex-direction:column;flex-grow:1;overflow:hidden;background-color:var(--panel-bg);}
-    .controls-wrapper{padding:12px 16px;border-bottom:1px solid var(--border-color);background-color:var(--panel-bg);display:flex;flex-direction:column;gap:8px;}
-    .controls-wrapper select, .controls-wrapper input{width:100%;padding:10px 14px;font-size:14px;border:1px solid var(--border-color);border-radius:6px;outline:none;background-color:var(--bg-color);color:var(--text-color);}
-    .controls-wrapper select:focus, .controls-wrapper input:focus{border-color:var(--primary-color);background-color:#fff;box-shadow:0 0 0 3px rgba(3,102,214,0.2);}
+    .controls-wrapper{padding:16px;border-bottom:1px solid var(--border-color);background-color:var(--panel-bg);display:flex;flex-direction:column;gap:10px;}
+    .controls-wrapper select, .controls-wrapper input{width:100%;padding:10px 14px;font-size:14px;border:1px solid var(--border-color);border-radius:6px;outline:none;background-color:var(--bg-color);color:#f0f6fc;}
+    .controls-wrapper select:focus, .controls-wrapper input:focus{border-color:var(--primary-color);background-color:#161b22;box-shadow:0 0 0 3px rgba(88,166,255,0.15);}
     .song-list-container{flex:1;overflow-y:auto;padding:8px 16px;}
     .song-list{list-style:none;}
-    .song-item{padding:10px 12px;font-size:13px;cursor:pointer;border-radius:6px;margin-bottom:6px;color:var(--text-color);background-color:var(--bg-color);display:flex;flex-direction:column;gap:2px;}
-    .song-item-title{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .song-item{padding:12px;font-size:13px;cursor:pointer;border-radius:6px;margin-bottom:8px;color:var(--text-color);background-color:var(--bg-color);border:1px solid transparent;display:flex;flex-direction:column;gap:4px;transition:all 0.2s ease;}
+    .song-item-title{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f0f6fc;}
     .song-item-meta{font-size:11px;color:var(--text-muted);}
-    .song-item:hover{background-color:var(--primary-hover);color:var(--primary-color);}
-    .song-item:hover .song-item-meta{color:var(--primary-color);}
-    .song-item.active{background-color:var(--primary-color);color:#fff;}
-    .song-item.active .song-item-meta{color:rgba(255,255,255,0.8);}
+    .song-item:hover{background-color:var(--primary-hover);border-color:var(--border-color);}
+    .song-item:hover .song-item-title{color:var(--primary-color);}
+    .song-item.active{background-color:var(--card-active);border-color:var(--primary-color);}
+    .song-item.active .song-item-title{color:#ffffff;}
+    .song-item.active .song-item-meta{color:rgba(255,255,255,0.7);}
     @media(min-width:768px){
       body{flex-direction:row;}
       .sidebar{width:320px;flex-grow:0;border-right:1px solid var(--border-color);}
       .main-content{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;background-color:var(--bg-color);overflow-y:auto;}
-      .video-window{max-width:900px;background:var(--panel-bg);border:1px solid var(--border-color);border-radius:8px;padding:24px;box-shadow:0 4px 12px rgba(27,31,35,0.05);}
-      .video-container{border-radius:6px;}
-      .active-info{padding:16px 0 0 0;border-bottom:none;}
+      .video-window{max-width:900px;background:var(--panel-bg);border:1px solid var(--border-color);border-radius:8px;padding:24px;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+      .video-container{border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.5);}
+      .active-info{padding:16px 0 0 0;border-bottom:none;background:transparent;}
       .active-info h1{font-size:20px;}
-      .empty-state{background:transparent;color:var(--text-muted);}
+      .empty-state{background:transparent;}
     }
   </style>
 </head>
@@ -101,7 +103,6 @@
 
     function loadVideo(video){
       currentActiveId=video.Id;
-      document.querySelectorAll('.song-item').forEach(el=>el.classList.remove('active'));
       renderList();
       document.getElementById('mainStage').innerHTML=`
         <div class="video-window">
