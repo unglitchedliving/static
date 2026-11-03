@@ -95,7 +95,7 @@
       // Added picture-in-picture permissions explicitly inside allow properties
       document.getElementById('mainStage').innerHTML=`
         <div class="video-window a-fade">
-          <div class="video-container"><iframe src="https://youtube.com/embed/${v.Video_id}?rel=0${ap}${lp}" allow="autoplay;encrypted-media;gyroscope;picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+          <div class="video-container"><iframe src="https://youtube.com/embed/${v.Video_id}?rel=0${ap}${lp}" allow="autoplay;encrypted-media;gyroscope;picture-in-picture 'none'" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
           <div class="active-info"><h1>${v.Title}</h1><p>Playlist: <strong>${v.Playlist}</strong></p></div>
         </div>`;
     }
