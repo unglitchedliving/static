@@ -3,71 +3,167 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My GitHub Pages Video Gallery</title>
+  <title>Video Stream PWA</title>
+  
+  <!-- Web App Manifest for PWA capabilities -->
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Video%20Stream%20PWA%22%2C%22short_name%22%3A%22VideoStream%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f6f8fa%22%2C%22theme_color%22%3A%22%230366d6%22%7D">
+  
   <style>
+    :root {
+      --bg-color: #f6f8fa;
+      --panel-bg: #ffffff;
+      --border-color: #e1e4e8;
+      --text-color: #24292e;
+      --text-muted: #586069;
+      --primary-color: #0366d6;
+      --primary-hover: #f1f8ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      background-color: #f6f8fa;
-      color: #24292e;
-      margin: 0;
-      padding: 40px 20px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    header {
-      margin-bottom: 32px;
-      border-bottom: 1px solid #e1e4e8;
-      padding-bottom: 16px;
-    }
-
-    header h1 {
-      font-size: 24px;
-      font-weight: 600;
-      margin: 0 0 8px 0;
-    }
-
-    header p {
-      color: #586069;
-      margin: 0;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
-
-    .video-card {
-      background: #ffffff;
-      border: 1px solid #e1e4e8;
-      border-radius: 6px;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(27,31,35,0.04);
+    /* Left Sidebar Styling */
+    .sidebar {
+      width: 320px;
+      background-color: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
     }
 
-    .video-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(27,31,35,0.08);
+    .search-box {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .video-player-container {
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.3);
+    }
+
+    .playlist-tree {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .playlist-group {
+      margin-bottom: 12px;
+    }
+
+    .playlist-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 4px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-radius: 4px;
+    }
+
+    .playlist-header:hover {
+      background-color: var(--bg-color);
+    }
+
+    .collapse-icon {
+      transition: transform 0.2s;
+      font-size: 10px;
+    }
+
+    .playlist-group.collapsed .collapse-icon {
+      transform: rotate(-90deg);
+    }
+
+    .song-list {
+      list-style: none;
+      padding-left: 16px;
+      margin-top: 4px;
+    }
+
+    .playlist-group.collapsed .song-list {
+      display: none;
+    }
+
+    .song-item {
+      padding: 8px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+      color: var(--text-color);
+    }
+
+    .song-item:hover {
+      background-color: var(--primary-hover);
+      color: var(--primary-color);
+    }
+
+    .song-item.active {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      font-weight: 500;
+    }
+
+    /* Main Video Viewport Styling */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .video-window {
+      width: 100%;
+      max-width: 900px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(27,31,35,0.05);
+    }
+
+    .video-container {
       position: relative;
       padding-bottom: 56.25%;
       height: 0;
       overflow: hidden;
       border-radius: 6px;
       background: #000;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
-    .video-player-container iframe {
+    .video-container iframe {
       position: absolute;
       top: 0;
       left: 0;
@@ -75,103 +171,183 @@
       height: 100%;
     }
 
-    .playlist-title {
-      font-size: 12px;
+    .active-info h1 {
+      font-size: 22px;
       font-weight: 600;
-      color: #6a737d;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
-    .video-title {
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1.4;
-      margin: 0 0 12px 0;
-      color: #0366d6;
+    .active-info p {
+      font-size: 14px;
+      color: var(--text-muted);
     }
 
-    .tags-container {
-      margin-top: auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
     }
 
-    .tag {
-      background-color: #f1f8ff;
-      color: #0366d6;
-      padding: 3px 8px;
-      font-size: 12px;
-      font-weight: 500;
-      border-radius: 3px;
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      fill: currentColor;
+      margin-bottom: 16px;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>Video Playlist Showcase</h1>
-      <p>A beautifully curated, JSON-driven video showcase gallery.</p>
-    </header>
+  <!-- Sidebar UI Layout -->
+  <aside class="sidebar">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search by title or playlist...">
+    </div>
+    <div id="playlistTree" class="playlist-tree"></div>
+  </aside>
 
-    <div id="video-grid" class="video-grid"></div>
-  </div>
+  <!-- Player Stage Layout -->
+  <main class="main-content" id="mainStage">
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M23 12c0 6.075-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1s11 4.925 11 11zm-2 0a9 9 0 1 0-18 0 9 9 0 0 0 18 0zm-10.25-3.5l6.5 3.5-6.5 3.5v-7z"/></svg>
+      <h2>Select a video from the sidebar to begin watching</h2>
+    </div>
+  </main>
 
   <script>
-    // Lightweight JSON Data structure using the working sample video ID alongside others
+    // Lightweight JSON Configuration Payload
     const videoData = [
       {
-        "id": "-Nbm1vFsr7Q", 
-        "playlist": "Featured Tutorials",
-        "title": "Getting Started with YouTube Embeds",
-        "tags": ["youtube", "embed", "iframe", "webdev"]
+        "Id": "001",
+        "Playlist": "Featured Tutorials",
+        "Title": "Getting Started with YouTube Embeds",
+        "Video_id": "-Nbm1vFsr7Q"
       },
       {
-        "id": "dQw4w9WgXcQ", 
-        "playlist": "Classic Hits",
-        "title": "Rick Astley - Never Gonna Give You Up",
-        "tags": ["music", "pop", "80s", "classic"]
+        "Id": "002",
+        "Playlist": "Classic Hits",
+        "Title": "Rick Astley - Never Gonna Give You Up",
+        "Video_id": "dQw4w9WgXcQ"
       },
       {
-        "id": "2g811Eo7K8U",
-        "playlist": "Web Development Basics",
-        "title": "HTML & CSS Crash Course for Beginners",
-        "tags": ["html", "css", "webdev", "tutorial"]
+        "Id": "003",
+        "Playlist": "Web Development Basics",
+        "Title": "HTML & CSS Crash Course for Beginners",
+        "Video_id": "2g811Eo7K8U"
       }
     ];
 
-    const gridContainer = document.getElementById('video-grid');
+    let currentActiveId = null;
 
-    videoData.forEach(video => {
-      const card = document.createElement('div');
-      card.className = 'video-card';
+    // Build or rebuild the playlist panel hierarchy dynamically
+    function renderTree(filterText = '') {
+      const treeContainer = document.getElementById('playlistTree');
+      treeContainer.innerHTML = '';
 
-      const tagsHTML = video.tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
+      const query = filterText.toLowerCase().trim();
 
-      // Using absolute backticks (`) to parse the template variables securely
-      card.innerHTML = `
-        <div class="video-player-container">
-          <iframe 
-            src="https://www.youtube.com/embed/${video.id}" 
-            title="${video.title}" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
-            allowfullscreen>
-          </iframe>
-        </div>
-        <div class="playlist-title">${video.playlist}</div>
-        <h2 class="video-title">${video.title}</h2>
-        <div class="tags-container">
-          ${tagsHTML}
+      // Group JSON entries by playlist category names
+      const groups = {};
+      videoData.forEach(item => {
+        const matchesTitle = item.Title.toLowerCase().includes(query);
+        const matchesPlaylist = item.Playlist.toLowerCase().includes(query);
+
+        if (!query || matchesTitle || matchesPlaylist) {
+          if (!groups[item.Playlist]) {
+            groups[item.Playlist] = [];
+          }
+          groups[item.Playlist].push(item);
+        }
+      });
+
+      // Render structures
+      Object.keys(groups).forEach(playlistName => {
+        const groupEl = document.createElement('div');
+        groupEl.className = 'playlist-group';
+
+        const headerEl = document.createElement('div');
+        headerEl.className = 'playlist-header';
+        headerEl.innerHTML = `<span>${playlistName}</span><span class="collapse-icon">▼</span>`;
+        
+        const listEl = document.createElement('ul');
+        listEl.className = 'song-list';
+
+        groups[playlistName].forEach(video => {
+          const itemEl = document.createElement('li');
+          itemEl.className = `song-item ${currentActiveId === video.Id ? 'active' : ''}`;
+          itemEl.textContent = video.Title;
+          itemEl.title = video.Title;
+          
+          // Singular loader trigger binding
+          itemEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            loadVideo(video);
+          });
+
+          listEl.appendChild(itemEl);
+        });
+
+        // Expand/Collapse structural manipulation toggles
+        headerEl.addEventListener('click', () => {
+          groupEl.classList.toggle('collapsed');
+        });
+
+        groupEl.appendChild(headerEl);
+        groupEl.appendChild(listEl);
+        treeContainer.appendChild(groupEl);
+      });
+    }
+
+    // Isolated single-video viewport target updating implementation
+    function loadVideo(video) {
+      currentActiveId = video.Id;
+      
+      // Update sidebar highlight tags classes accurately
+      document.querySelectorAll('.song-item').forEach(el => el.classList.remove('active'));
+      const activeItems = Array.from(document.querySelectorAll('.song-item'));
+      const targetItem = activeItems.find(el => el.textContent === video.Title);
+      if (targetItem) targetItem.classList.add('active');
+
+      const mainStage = document.getElementById('mainStage');
+      mainStage.innerHTML = `
+        <div class="video-window">
+          <div class="video-container">
+            <iframe 
+              src="https://youtube.com/embed/{video.Video_id}?autoplay=1" 
+              title="${video.Title}" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="active-info">
+            <h1>${video.Title}</h1>
+            <p>Playlist: <strong>${video.Playlist}</strong></p>
+          </div>
         </div>
       `;
+    }
 
-      gridContainer.appendChild(card);
+    // Filter-as-you-type search keystroke tracking initialization 
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      renderTree(e.target.value);
     });
+
+    // PWA Service Worker Inline registration setup block
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swBlob = new Blob([`
+          const CACHE_NAME = 'v1-stream-cache';
+          self.addEventListener('install', e => self.skipWaiting());
+          self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+        `], { type: 'text/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration skipped', err));
+      });
+    }
+
+    // Init display
+    renderTree();
   </script>
 
 </body>
