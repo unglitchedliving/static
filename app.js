@@ -32,13 +32,11 @@
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             data = await response.json();
-            console.log(data);
+            //console.log(data);
         } catch (error) {
             console.error('Error loading JSON:', error);
         }
     }
-    
-    loadData(); 
 
     const STORAGE = {
       video: "pwa_vid",
@@ -60,6 +58,7 @@
 
     // Initialize playlist options
     function init() {
+        loadData();
       const playlists = [...new Set(data.map(v => v.Playlist))];
 
       const fragment = document.createDocumentFragment();
