@@ -1,16 +1,32 @@
 "use strict";
 
-    let data = fetch('./data.json')
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
+    let data = [];
+
+    async function loadData() {
+        try {
+            const response = await fetch('./data.json');
     
-        // Access your data
-        data.forEach(video => {
-          console.log(video.Title);
-        });
-      })
-      .catch(error => console.error('Error:', error));
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            data = await response.json();
+    
+            console.log(data);
+    
+            data.forEach(video => {
+                console.log(video.Title);
+            });
+    
+            // Now you can use data here
+            displayVideos();
+    
+        } catch (error) {
+            console.error('Error loading JSON:', error);
+        }
+    }
+    
+    loadData();
 
     const STORAGE = {
       video: "pwa_vid",
