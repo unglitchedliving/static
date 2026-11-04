@@ -28,7 +28,7 @@
     async function loadData() {
         /*----Hi-----*/
         try {
-            const response = await fetch('./data.json?v=${new Date().getTime()}');
+            const response = await fetch('./data.json?v='${new Date().getTime()});
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
