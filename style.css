@@ -167,6 +167,7 @@
       border: 1px solid transparent;
       display: flex;
       flex-direction: column;
+      border-bottom: solid 1px lavender;
       transition: background-color .15s, border-color .15s;
     }
 
