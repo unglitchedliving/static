@@ -138,7 +138,7 @@
     .btn-clear {
       background: transparent;
       border: 1px solid var(--border-color);
-      color: var(--danger-color);
+      color: goldenrod;
       padding: 4px 8px;
       font-size: 11px;
       border-radius: 6px;
@@ -172,17 +172,17 @@
     }
 
     .song-item-title {
-      font-weight: 600;
+      font-weight: 300;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: whitesmoke;
+      color: #f0f6fc;
       font-size: 13px;
     }
 
     .song-item-meta {
-      font-size: 12px;
-      color: gainsboro;
+      font-size: 11px;
+      color: var(--text-muted);
     }
 
     .song-item:hover {
@@ -262,72 +262,3 @@
         transition-duration: .01ms !important;
       }
     }
-.edit-btn {
-    padding: 10px 22px;
-    border: none;
-    border-radius: 8px;
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
-}
-
-.edit-panel {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(92%, 480px);
-    max-height: 85vh;
-    overflow-y: auto;
-    background: #fff;
-    color: #222;
-    border-radius: 14px;
-    padding: 18px;
-    z-index: 9999;
-    box-shadow: 0 10px 40px rgba(0,0,0,.35);
-}
-
-.edit-panel.show {
-    display: block;
-}
-
-.edit-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.edit-tabs {
-    display: flex;
-    gap: 8px;
-    margin: 15px 0;
-}
-
-.edit-tab {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 7px;
-    cursor: pointer;
-    background: #e5e7eb;
-}
-
-.edit-tab.active {
-    background: #2563eb;
-    color: white;
-}
-
-#editSearch {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 7px;
-}
-
-.edit-list {
-    margin-top: 15px;
-    max-height: 45vh;
-    overflow-y: auto;
-}
