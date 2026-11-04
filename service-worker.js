@@ -1,7 +1,7 @@
 
 "use strict";
 
-const CACHE_NAME = "video-stream-v1";
+const CACHE_NAME = "video-stream-v2";
 
 const APP_FILES = [
   "./",
@@ -11,7 +11,7 @@ const APP_FILES = [
   "./icons/icon-512.png"
 ];
 
-// Install: cache application shell
+// Install application shell
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -20,7 +20,7 @@ self.addEventListener("install", event => {
   );
 });
 
-// Activate: remove outdated application caches
+// Activate and remove old application caches
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -36,16 +36,22 @@ self.addEventListener("activate", event => {
   );
 });
 
-// Cache-first for same-origin application files
+// Cache only same-origin GET requests
 self.addEventListener("fetch", event => {
   const request = event.request;
 
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+
+  // Never intercept external requests
+  if (url.origin !== self.location.origin) return;
+
+  // Ignore browser navigation and API requests outside the app
   if (
-    request.method !== "GET" ||
-    new URL(request.url).origin !== self.location.origin
-  ) {
-    return;
-  }
+    url.pathname.includes("/api/") ||
+    url.pathname.includes("/.well-known/")
+  ) return;
 
   event.respondWith(
     caches.match(request).then(cached => {
@@ -58,8 +64,11 @@ self.addEventListener("fetch", event => {
         ) {
           const copy = response.clone();
 
-          caches.open(CACHE_NAME)
-            .then(cache => cache.put(request, copy));
+          event.waitUntil(
+            caches.open(CACHE_NAME).then(cache =>
+              cache.put(request, copy)
+            )
+          );
         }
 
         return response;
