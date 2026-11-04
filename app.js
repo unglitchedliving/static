@@ -1,25 +1,16 @@
 "use strict";
 
-    const data = [
-      {
-        Id: "001",
-        Playlist: "Featured Tutorials",
-        Title: "Getting Started with YouTube Embeds",
-        Video_id: "-Nbm1vFsr7Q"
-      },
-      {
-        Id: "002",
-        Playlist: "Classic Hits",
-        Title: "Rick Astley - Never Gonna Give You Up",
-        Video_id: "dQw4w9WgXcQ"
-      },
-      {
-        Id: "003",
-        Playlist: "Web Development Basics",
-        Title: "HTML & CSS Crash Course for Beginners",
-        Video_id: "2g811Eo7K8U"
-      }
-    ];
+    fetch('./data.json')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+    
+        // Access your data
+        data.forEach(video => {
+          console.log(video.Title);
+        });
+      })
+      .catch(error => console.error('Error:', error));
 
     const STORAGE = {
       video: "pwa_vid",
