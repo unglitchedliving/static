@@ -1,5 +1,6 @@
 "use strict";
 
+/*
     const data = [
       {
         Id: "001",
@@ -20,6 +21,24 @@
         Video_id: "2g811Eo7K8U"
       }
     ];
+*/
+
+    let data = [];
+
+    async function loadData() {
+        try {
+            const response = await fetch('./data.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error loading JSON:', error);
+        }
+    }
+    
+    await loadData(); 
 
     const STORAGE = {
       video: "pwa_vid",
