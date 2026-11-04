@@ -259,3 +259,4 @@
                     console.error('Error loading JSON:', error);
                 }
     }
+loadData();
