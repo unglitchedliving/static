@@ -1,7 +1,7 @@
 
 "use strict";
 
-const CACHE_NAME = "video-stream-v13";
+const CACHE_NAME = "video-stream-v14";
 
 const APP_FILES = [
   "./",
