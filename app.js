@@ -48,7 +48,7 @@
 
     // Initialize playlist options
     function init() {
-      const playlists = [...new Set(data.map(v => v.Playlist))];
+      const playlists = [...new Set( await data.map(v => v.Playlist))];
 
       const fragment = document.createDocumentFragment();
 
@@ -66,7 +66,7 @@
 
       render();
 
-      const savedVideo = data.find(
+      const savedVideo = await data.find(
         v => v.Id === localStorage.getItem(STORAGE.video)
       );
 
@@ -82,7 +82,7 @@
 
       const fragment = document.createDocumentFragment();
 
-      const filtered = data.filter(video =>
+      const filtered = await data.filter(video =>
         (!playlist || video.Playlist === playlist) &&
         (!query || video.Title.toLowerCase().includes(query))
       );
@@ -203,7 +203,7 @@
         String(elements.loop.checked)
       );
 
-      const current = data.find(v => v.Id === activeId);
+      const current = await data.find(v => v.Id === activeId);
 
       if (current) {
         load(current, false);
