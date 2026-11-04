@@ -88,6 +88,7 @@
 
     // Render filtered playlist
     function render() {
+        loadData();
       const playlist = elements.playlist.value;
       const query = elements.search.value.trim().toLowerCase();
 
@@ -136,6 +137,7 @@
 
     // Load YouTube video
     function load(video, autoplay = false) {
+        loadData();
       activeId = video.Id;
 
       localStorage.setItem(STORAGE.video, video.Id);
