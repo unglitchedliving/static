@@ -138,7 +138,7 @@
     .btn-clear {
       background: transparent;
       border: 1px solid var(--border-color);
-      color: var(--danger-color);
+      color: goldenrod;
       padding: 4px 8px;
       font-size: 11px;
       border-radius: 6px;
