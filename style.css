@@ -172,17 +172,17 @@
     }
 
     .song-item-title {
-      font-weight: 300;
+      font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: aqua;
-      font-size: 13px;
+      color: whitesmoke;
+      font-size: 12px;
     }
 
     .song-item-meta {
-      font-size: 12px;
-      color: salmon;
+      font-size: 11px;
+      color: gainsboro;
     }
 
     .song-item:hover {
