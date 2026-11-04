@@ -1,0 +1,262 @@
+:root {
+      color-scheme: dark;
+      --bg-color: #0d1117;
+      --panel-bg: #161b22;
+      --border-color: #30363d;
+      --text-color: #c9d1d9;
+      --text-muted: #8b949e;
+      --primary-color: #58a6ff;
+      --primary-hover: #1f2937;
+      --card-active: #1f6feb;
+      --danger-color: #f85149;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .main-content {
+      width: 100%;
+      background: #000;
+      flex-shrink: 0;
+    }
+
+    .video-window {
+      width: 100%;
+    }
+
+    .video-container {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .active-info {
+      background: var(--panel-bg);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .active-info h1 {
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #f0f6fc;
+    }
+
+    .active-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .active-info strong {
+      color: var(--primary-color);
+    }
+
+    .empty-state {
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--panel-bg);
+    }
+
+    .controls-wrapper {
+      padding: 14px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .controls-wrapper select,
+    .controls-wrapper input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-color);
+      color: #f0f6fc;
+    }
+
+    .controls-wrapper :focus-visible,
+    button:focus-visible,
+    .song-item:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    .options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 4px;
+    }
+
+    .loop-label {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn-clear {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--danger-color);
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .song-list-container {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 4px 14px;
+      overscroll-behavior: contain;
+    }
+
+    .song-list {
+      list-style: none;
+    }
+
+    .song-item {
+      padding: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      background: var(--bg-color);
+      border: 1px solid transparent;
+      display: flex;
+      flex-direction: column;
+      transition: background-color .15s, border-color .15s;
+    }
+
+    .song-item-title {
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #f0f6fc;
+    }
+
+    .song-item-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .song-item:hover {
+      background: var(--primary-hover);
+      border-color: var(--border-color);
+    }
+
+    .song-item.active {
+      background: var(--card-active);
+      border-color: var(--primary-color);
+    }
+
+    .ad-zone {
+      width: 100%;
+      min-height: 60px;
+      background: var(--panel-bg);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      flex-shrink: 0;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    @media (min-width: 768px),
+           (orientation: landscape) and (max-height: 500px) {
+
+      body {
+        flex-direction: row;
+      }
+
+      .sidebar {
+        width: 280px;
+        flex: 0 0 280px;
+        border-right: 1px solid var(--border-color);
+      }
+
+      .main-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .video-window {
+        width: 100%;
+        max-width: 850px;
+        background: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      .video-container {
+        border-radius: 6px;
+      }
+
+      .active-info {
+        padding: 12px 0 0;
+        border: 0;
+        background: transparent;
+      }
+
+      .empty-state {
+        background: transparent;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
