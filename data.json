@@ -1,8 +1,68 @@
 [
   {
     "Id": "1",
-    "Playlist": "Instrumental - Music",
-    "Title": "Sacral Nirvana - Oliver Shanti",
-    "Video_id": "BvRCUZL-2j0"
+    "Playlist": "Sufi-Modern-Punjabi",
+    "Title": "Uddi Ja Uddi Ja-Mosin Abbas Haider",
+    "Video_id": "rOO_oaPxL7c"
+  },
+  {
+    "Id": "2",
+    "Playlist": "Sufi-Modern-Punjabi",
+    "Title": "Ranjha Jogra Ban Aya-Ghulam Ali Khan",
+    "Video_id": "RfyyqDzc_E0"
+  },
+  {
+    "Id": "3",
+    "Playlist": "Sufi-Classical-Punjabi",
+    "Title": "Ghungat Chakk Lai Sajjna-NFAK",
+    "Video_id": "3V37zA_yOlM"
+  },
+  {
+    "Id": "4",
+    "Playlist": "Sufi-Modern-Punjabi",
+    "Title": "Paar Chana De-Shilpa Rao N Noori",
+    "Video_id": "qclDBF7Jkfk"
+  },
+  {
+    "Id": "5",
+    "Playlist": "Sufi-Classical-Hindi",
+    "Title": "Ab Lagan Lagi Ki Kariye-Pooja Goswami",
+    "Video_id": "NSt2BFMI2Iw"
+  },
+  {
+    "Id": "6",
+    "Playlist": "Bhajan-Classical-Hindi",
+    "Title": "Tujhko Kyun Dhoondoo-Pooja Goswami",
+    "Video_id": "HhSyguy4G7w"
+  },
+  {
+    "Id": "7",
+    "Playlist": "Sufi-Classical-Punjabi",
+    "Title": "Ab Lagan Lagi Ki Kariye-Abida Parveen",
+    "Video_id": "V9ow639pXzI"
+  },
+  {
+    "Id": "8",
+    "Playlist": "Bhajan-Classical-Hindi",
+    "Title": "Man Lago Yaar Fakiri-Abida Parveen",
+    "Video_id": "1WpvW2db6g4"
+  },
+  {
+    "Id": "9",
+    "Playlist": "Sufi-Classical-Hindi",
+    "Title": "Yaar Ko Hamne-Abida Parveen",
+    "Video_id": "DNEVvqcSHsc"
+  },
+  {
+    "Id": "10",
+    "Playlist": "Sufi-Classical-Hindi",
+    "Title": "Piya Ghar Aaye-Shujaat Hussain Khan",
+    "Video_id": "v-pe7wtx_C0"
+  },
+  {
+    "Id": "11",
+    "Playlist": "Bhajan-Classical-Hindi",
+    "Title": "Akhiyan Hari Darshani-Mohammed Rafi",
+    "Video_id": "etD5_cBVO-8"
   }
 ]
