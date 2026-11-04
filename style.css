@@ -176,6 +176,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       color: #f0f6fc;
+      font-size: 14px;
     }
 
     .song-item-meta {
