@@ -26,6 +26,7 @@
     let data = [];
 
     async function loadData() {
+        /*----Hi-----*/
         try {
             const response = await fetch('./data.json');
             if (!response.ok) {
@@ -53,7 +54,6 @@
         
             // Initialize playlist options
             function init() {
-                loadData();
               const playlists = [...new Set(data.map(v => v.Playlist))];
         
               const fragment = document.createDocumentFragment();
@@ -83,7 +83,6 @@
         
             // Render filtered playlist
             function render() {
-                loadData();
               const playlist = elements.playlist.value;
               const query = elements.search.value.trim().toLowerCase();
         
@@ -132,7 +131,6 @@
         
             // Load YouTube video
             function load(video, autoplay = false) {
-                loadData();
               activeId = video.Id;
         
               localStorage.setItem(STORAGE.video, video.Id);
@@ -259,4 +257,4 @@
                     console.error('Error loading JSON:', error);
                 }
     }
-loadData();
+     loadData();
