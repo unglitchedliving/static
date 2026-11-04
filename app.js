@@ -1,32 +1,25 @@
 "use strict";
 
-    let data = [];
-
-    async function loadData() {
-        try {
-            const response = await fetch('./data.json');
-    
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-    
-            data = await response.json();
-    
-            console.log(data);
-    
-            data.forEach(video => {
-                console.log(video.Title);
-            });
-    
-            // Now you can use data here
-            //displayVideos();
-    
-        } catch (error) {
-            console.error('Error loading JSON:', error);
-        }
-    }
-    
-    loadData();
+    const data = [
+      {
+        Id: "001",
+        Playlist: "Featured Tutorials",
+        Title: "Getting Started with YouTube Embeds",
+        Video_id: "-Nbm1vFsr7Q"
+      },
+      {
+        Id: "002",
+        Playlist: "Classic Hits",
+        Title: "Rick Astley - Never Gonna Give You Up",
+        Video_id: "dQw4w9WgXcQ"
+      },
+      {
+        Id: "003",
+        Playlist: "Web Development Basics",
+        Title: "HTML & CSS Crash Course for Beginners",
+        Video_id: "2g811Eo7K8U"
+      }
+    ];
 
     const STORAGE = {
       video: "pwa_vid",
@@ -48,7 +41,7 @@
 
     // Initialize playlist options
     function init() {
-      const playlists = [...new Set( await data.map(v => v.Playlist))];
+      const playlists = [...new Set(data.map(v => v.Playlist))];
 
       const fragment = document.createDocumentFragment();
 
@@ -66,7 +59,7 @@
 
       render();
 
-      const savedVideo = await data.find(
+      const savedVideo = data.find(
         v => v.Id === localStorage.getItem(STORAGE.video)
       );
 
@@ -82,7 +75,7 @@
 
       const fragment = document.createDocumentFragment();
 
-      const filtered = await data.filter(video =>
+      const filtered = data.filter(video =>
         (!playlist || video.Playlist === playlist) &&
         (!query || video.Title.toLowerCase().includes(query))
       );
@@ -203,7 +196,7 @@
         String(elements.loop.checked)
       );
 
-      const current = await data.find(v => v.Id === activeId);
+      const current = data.find(v => v.Id === activeId);
 
       if (current) {
         load(current, false);
