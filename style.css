@@ -177,11 +177,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
       color: whitesmoke;
-      font-size: 12px;
+      font-size: 13px;
     }
 
     .song-item-meta {
-      font-size: 11px;
+      font-size: 12px;
       color: gainsboro;
     }
 
