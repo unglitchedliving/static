@@ -38,7 +38,7 @@
         }
     }
     
-    await loadData(); 
+    loadData(); 
 
     const STORAGE = {
       video: "pwa_vid",
